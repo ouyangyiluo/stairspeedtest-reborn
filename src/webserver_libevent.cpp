@@ -199,7 +199,7 @@ void OnReq(evhttp_request *req, void *args)
     struct evkeyval* kv = req->input_headers->tqh_first;
     while (kv)
     {
-        if(std::none_of(std::begin(request_header_blacklist), std::end(request_header_blacklist), [&](auto x){ return strcasecmp(kv->key, x) == 0; }))
+        if(std::none_of(std::begin(request_header_blacklist), std::end(request_header_blacklist), [&](auto x){ return _stricmp(kv->key, x) == 0; }))
             request.headers.emplace(kv->key, kv->value);
         kv = kv->next.tqe_next;
     }
@@ -344,9 +344,10 @@ int start_web_server_multi(void *argv)
     int nfd = httpserver_bindsocket(listen_address, port, args->max_conn);
     if (nfd < 0)
         return -1;
-
-    pthread_t ths[nthreads];
-    struct event_base *base[nthreads];
+    std::vector<pthread_t> ths(nthreads);
+    ////pthread_t ths[nthreads];
+    std::vector<event_base*> base(nthreads);
+    ////struct event_base *base[nthreads];
     for (i = 0; i < nthreads; i++)
     {
         base[i] = event_init();

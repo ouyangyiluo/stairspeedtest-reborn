@@ -7,7 +7,10 @@
 #include <algorithm>
 #include <future>
 #include <sys/types.h>
-#include <dirent.h>
+
+////#include <dirent.h>
+#include <direct.h>
+
 #include <string.h>
 
 #include <yaml-cpp/yaml.h>
@@ -15,7 +18,7 @@
 #include "string_hash.h"
 
 #ifdef _WIN32
-#include <unistd.h>
+////#include <unistd.h>
 #define PATH_SLASH "\\"
 #else
 #include <sys/types.h>
@@ -368,7 +371,7 @@ template <typename T> std::string to_string(const T& n)
 static inline int md(const char *path)
 {
 #ifdef _WIN32
-    return mkdir(path);
+    return _mkdir(path);
 #else
     return mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif // _WIN32

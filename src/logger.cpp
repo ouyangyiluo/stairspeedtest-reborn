@@ -8,7 +8,9 @@
 #include "misc.h"
 #include "printout.h"
 
-#include <sys/time.h>
+////#include <sys/time.h>
+#include <winsock.h>
+
 #ifdef _WIN32
 #include <direct.h>
 #else
@@ -31,13 +33,34 @@ int makeDir(const char *path)
 #endif // _WIN32
 }
 
+int my_gettimeofday(struct timeval* tp, struct timezone* tzp)
+{
+    // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+    // This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+    // until 00:00:00 January 1, 1970 
+    static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
+
+    SYSTEMTIME  system_time;
+    FILETIME    file_time;
+    uint64_t    time;
+
+    GetSystemTime(&system_time);
+    SystemTimeToFileTime(&system_time, &file_time);
+    time = ((uint64_t)file_time.dwLowDateTime);
+    time += ((uint64_t)file_time.dwHighDateTime) << 32;
+
+    tp->tv_sec = (long)((time - EPOCH) / 10000000L);
+    tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+    return 0;
+}
+
 std::string getTime(int type)
 {
     time_t lt;
     char tmpbuf[32], cMillis[7];
     std::string format;
     timeval tv;
-    gettimeofday(&tv, NULL);
+    my_gettimeofday(&tv, NULL);
     snprintf(cMillis, 7, "%.6ld", (long)tv.tv_usec);
     lt = time(NULL);
     struct tm *local = localtime(&lt);

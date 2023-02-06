@@ -29,6 +29,7 @@
 #include "ini_reader.h"
 #include "multithread_test.h"
 #include "nodeinfo.h"
+#include <csignal>
 
 using namespace std::chrono;
 

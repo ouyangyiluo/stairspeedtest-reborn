@@ -9,7 +9,7 @@
 
 using namespace std::chrono;
 
-const int times_to_ping = 6;
+const int times_to_ping = 1;
 
 void draw_progress_tping(int progress, int values[6])
 {
