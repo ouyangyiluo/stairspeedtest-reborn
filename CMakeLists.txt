@@ -1,5 +1,5 @@
-project(stairspeedtest LANGUAGES CXX)
 cmake_minimum_required(VERSION 3.4)
+project(stairspeedtest LANGUAGES CXX)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
 IF(NOT CMAKE_BUILD_TYPE)
@@ -59,11 +59,16 @@ LINK_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
 FIND_PACKAGE(PkgConfig REQUIRED)
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-find_package(pthreads REQUIRED)
-
-target_link_libraries(stairspeedtest Threads::Threads)
+#SET(THREADS_PREFER_PTHREAD_FLAG ON)
+FIND_PACKAGE(pthreads REQUIRED)
+#LINK_DIRECTORIES(${PTHREADS_LIBRARY_DIRS})
+INCLUDE_DIRECTORIES(${PTHREADS_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(stairspeedtest ${PTHREADS_LIBRARY})
+#set(THREADS_PREFER_PTHREAD_FLAG ON)
+#find_package(Threads REQUIRED)
+#find_package(pthreads REQUIRED)
+#
+##target_link_libraries(stairspeedtest Threads::Threads)
 #TARGET_LINK_LIBRARIES(stairspeedtest ${CMAKE_THREAD_LIBS_INIT})
 
 PKG_CHECK_MODULES(LIBEVENT libevent REQUIRED)
